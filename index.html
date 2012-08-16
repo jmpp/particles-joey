@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="utf-8" />
+ <meta http-equiv="X-UA-Compatible" content="chrome=1, IE=edge" />
+ <title>Particles Joey</title>
+</head>
+<body bgcolor="#000;">
+<canvas id="canvas" style="position:fixed;top:0;left:0;right:0;bottom:0;"></canvas>
+<script>
+// -------
+// - CFG -
+// -------
+
+rAF = (function(w) {
+	return  w.requestAnimationFrame ||
+	 w.webkitRequestAnimationFrame ||
+	 w.mozRequestAnimationFrame ||
+	 w.oRequestAnimationFrame ||
+	 w.msRequestAnimationFrame ||
+	 function(c,e) {
+		w.setTimeout(c, 100/6);
+	 };
+})(window);
+
+var cn = document.getElementById('canvas');
+var ct = cn.getContext('2d');
+
+var W = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+var H = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+cn.width = W;
+cn.height = H;
+var p = [], pc = {x: 400, y: 300, s: 4}; // Particles 'p' and core 'pc'
+var k = {u: 0, r: 0, d: 0, l: 0}; // Keys pressed
+
+// --------
+// - Game -
+// --------
+
+cp(15);
+run();
+
+function run() {
+	ap(); // Animate Particles
+	rp(); // Render Particles
+	rAF(run);
+}
+
+// Create Particles
+function cp(i) {
+	while(i--) {
+		p.push({
+			x: Math.random() * W,
+			y: Math.random() * H,
+			w: Math.random() * 8 + 2,
+			sx: Math.random() * 1,
+			sy: Math.random() * 1
+		});
+	}
+}
+
+// Animate Particles
+function ap() {
+	// Particles Core
+	if (k.u)	pc.y -= pc.s;
+	if (k.r)	pc.x += pc.s;
+	if (k.d)	pc.y += pc.s;
+	if (k.l)	pc.x -= pc.s;
+
+	// Particles
+	for(var i in p)
+	{
+		p[i].x += p[i].sx;
+		p[i].y += p[i].sy;
+		
+		var a = Math.atan2(pc.y+25 - p[i].y, pc.x+25 - p[i].x);
+		p[i].sx += Math.cos(a);
+		p[i].sy += Math.sin(a);
+
+		if      (p[i].sx >= 0) p[i].sx = p[i].sx >  10 ?  10 : p[i].sx;
+		else if (p[i].sx <  0) p[i].sx = p[i].sx < -10 ? -10 : p[i].sx;
+		if      (p[i].sy >= 0) p[i].sy = p[i].sy >  10 ?  10 : p[i].sy;
+		else if (p[i].sy <  0) p[i].sy = p[i].sy < -10 ? -10 : p[i].sy;
+	}
+}
+
+// Render Particles
+function rp() {
+	ct.clearRect(0, 0, W, H);	
+	
+	// Particle core 'pc'
+	ct.shadowColor = '#09f';
+	ct.shadowBlur = 100;
+	ct.fillStyle = '#046';
+	/*ct.arc(pc.x, pc.y, 50, 0, Math.PI*2, 1);
+	ct.fill();*/
+	ct.fillRect(pc.x, pc.y, 50, 50);
+	// Particles
+	ct.shadowBlur = 7;
+	ct.shadowColor = ct.fillStyle = '#fff';
+	for(var i in p)
+		ct.fillRect(p[i].x, p[i].y, p[i].w, p[i].w);
+}
+
+// -----------------------
+// - User events gesture -
+// -----------------------
+
+document.addEventListener('keydown', gkd, 0);
+document.addEventListener('keyup', gku, 0);
+
+function gkd(e) {
+	k.u = e.keyCode == 38 ? 1 : k.u;
+	k.r = e.keyCode == 39 ? 1 : k.r;
+	k.d = e.keyCode == 40 ? 1 : k.d;
+	k.l = e.keyCode == 37 ? 1 : k.l;
+}
+function gku(e) {
+	k.u = e.keyCode == 38 ? 0 : k.u;
+	k.r = e.keyCode == 39 ? 0 : k.r;
+	k.d = e.keyCode == 40 ? 0 : k.d;
+	k.l = e.keyCode == 37 ? 0 : k.l;
+}
+</script>
+</body>
+</html>
