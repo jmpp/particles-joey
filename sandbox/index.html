@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<title>Sandbox</title>
+		
+		<script type="text/javascript" src="Unit.js"></script>
+		<!--<script type="text/javascript" src="Bloc.js"></script>-->
+		<script type="text/javascript" src="Map.js"></script>
+		<script type="text/javascript" src="Game.js"></script>
+		<script type="text/javascript">
+			// Alias de console.log
+			function log(msg) {
+				console.log(msg);
+			}
+
+			function $(id) {
+				return document.getElementById(id);
+			}
+
+			function getRandomInt(min, max) {
+				return Math.floor(Math.random() * (max - min + 1)) + min;
+			}
+
+			function getRandomOne() {
+				return Math.floor(Math.random()*3-1);
+			}
+
+			function getDistance(ptA, ptB) {
+				return Math.sqrt(Math.pow((ptA.x - ptB.x),2) + Math.pow((ptA.y - ptB.y),2));
+			}
+
+			var options = {
+				w : 60,
+				h : 60
+			}
+
+			var Game = new Game(options);
+			Game.start();
+			setInterval('Game.update()', 1000);
+		</script>
+	</head>
+
+	<body>
+	</body>
+</html>
